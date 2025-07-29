@@ -33,6 +33,18 @@ describe('@mantine/core/parse-theme-color', () => {
     });
   });
 
+  it('safely handles a theme color with with an invalid shade', () => {
+    expect(parseThemeColor({ color: 'grape.567', theme: DEFAULT_THEME })).toStrictEqual({
+      color: 'grape',
+      value: DEFAULT_THEME.colors.grape[6],
+      shade: 6,
+      isThemeColor: true,
+      isLight: false,
+      variable: '--mantine-color-grape-6',
+    });
+  })
+
+
   it('parses non theme color correctly', () => {
     expect(parseThemeColor({ color: '#FEFEFE', theme: DEFAULT_THEME })).toStrictEqual({
       color: '#FEFEFE',
