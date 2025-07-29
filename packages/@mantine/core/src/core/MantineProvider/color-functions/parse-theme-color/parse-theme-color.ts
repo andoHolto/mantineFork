@@ -72,14 +72,21 @@ export function parseThemeColor({
   }
 
   const [_color, shade] = color.split('.');
-  const colorShade = shade ? (Number(shade) as MantineColorShade) : undefined;
+  let colorShade = shade ? (Number(shade) as MantineColorShade) : undefined;
   const isThemeColor = _color in theme.colors;
 
   if (isThemeColor) {
-    const colorValue =
+    let colorValue =
       colorShade !== undefined
         ? theme.colors[_color][colorShade]
         : theme.colors[_color][getPrimaryShade(theme, colorScheme || 'light')];
+
+    // If the `colorShade` does not exist, use the primary shade.
+    // This ensures we don't pass an undefined `colorValue` to `isLightColor()`.
+    if (colorValue===undefined) {
+      colorValue = theme.colors[_color][getPrimaryShade(theme, colorScheme || 'light')];
+      colorShade = getPrimaryShade(theme, colorScheme || 'light')
+    }
 
     return {
       color: _color,
